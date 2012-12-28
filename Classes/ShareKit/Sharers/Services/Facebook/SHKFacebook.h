@@ -29,7 +29,7 @@
 #import <Foundation/Foundation.h>
 #import "SHKSharer.h"
 #import "SHKCustomFormControllerLargeTextField.h"
-
+ 
 @interface SHKFacebook : SHKSharer <SHKFormControllerLargeTextFieldDelegate>{
 	NSMutableSet* pendingConnections;	// use a set so that connections can only be added once
 }
