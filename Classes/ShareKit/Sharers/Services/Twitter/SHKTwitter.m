@@ -173,7 +173,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 
 - (void)prepareItem {
 
-	NSString *status = [self.item customValueForKey:@"status"];
+	NSString *status = [self.item customValueForKey:@"ttstatus"];
 	if (!status)
 	{
 		status = self.item.shareType == SHKShareTypeText ? self.item.text : self.item.title;
@@ -192,7 +192,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
         status = [NSString stringWithFormat:@"%@ %@", status, URLstring];
     }
     
-	[self.item setCustomValue:status forKey:@"status"];
+	[self.item setCustomValue:status forKey:@"ttstatus"];
 }
 
 #pragma mark -
@@ -317,7 +317,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 {
 	SHKCustomFormControllerLargeTextField *rootView = [[SHKCustomFormControllerLargeTextField alloc] initWithNibName:nil bundle:nil delegate:self];	
 	
-	rootView.text = [self.item customValueForKey:@"status"];
+	rootView.text = [self.item customValueForKey:@"ttstatus"];
 	rootView.maxTextLength = 140;
 	rootView.image = self.item.image;
 	rootView.imageTextLength = 25;
@@ -332,7 +332,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 
 - (void)sendForm:(SHKCustomFormControllerLargeTextField *)form
 {
-	[self.item setCustomValue:form.textView.text forKey:@"status"];
+	[self.item setCustomValue:form.textView.text forKey:@"ttstatus"];
 	[self tryToSend];
 }
 
@@ -344,9 +344,10 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 	BOOL result = NO;
 	
 	BOOL isValid = [super validateItem];
-	NSString *status = [self.item customValueForKey:@"status"];
-	
-	if (isValid && status.length <= 140 && status.length > 0) {
+    NSLog(@"isValid===%d",isValid);
+	NSString *status = [self.item customValueForKey:@"ttstatus"];
+	NSLog(@"status=====%@",status);
+	if (isValid && status.length <= 140) {
 		result = YES;
 	}
 	
@@ -437,7 +438,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 	[oRequest setHTTPMethod:@"POST"];
 	
 	OARequestParameter *statusParam = [[OARequestParameter alloc] initWithName:@"status"
-																								value:[self.item customValueForKey:@"status"]];
+																								value:[self.item customValueForKey:@"ttstatus"]];
 	NSArray *params = [NSArray arrayWithObjects:statusParam, nil];
 	[oRequest setParameters:params];
 	[statusParam release];
@@ -546,7 +547,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 	} else {
 		[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 		[body appendData:[@"Content-Disposition: form-data; name=\"message\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-		[body appendData:[[self.item customValueForKey:@"status"] dataUsingEncoding:NSUTF8StringEncoding]];
+		[body appendData:[[self.item customValueForKey:@"ttstatus"] dataUsingEncoding:NSUTF8StringEncoding]];
 		[body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];	
 	}
 	
@@ -585,7 +586,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 		if (startingRange.location != NSNotFound && endingRange.location != NSNotFound) {
 			NSString *urlString = [dataString substringWithRange:NSMakeRange(startingRange.location + startingRange.length, endingRange.location - (startingRange.location + startingRange.length))];
 			//SHKLog(@"extracted string: %@",urlString);
-			[self.item setCustomValue:[NSString stringWithFormat:@"%@ %@",[self.item customValueForKey:@"status"],urlString] forKey:@"status"];
+			[self.item setCustomValue:[NSString stringWithFormat:@"%@ %@",[self.item customValueForKey:@"ttstatus"],urlString] forKey:@"ttstatus"];
 			[self sendStatus];
 		} else {
 			[self handleUnsuccessfulTicket:data];

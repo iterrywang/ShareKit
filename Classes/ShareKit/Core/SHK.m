@@ -37,7 +37,7 @@
 #import <objc/message.h>
 #import <MessageUI/MessageUI.h>
 #import "Singleton.h"
-
+NSString * const SHKHideCurrentViewFinishedNotification = @"SHKHideCurrentViewFinished";
 NSString * const SHKSendDidStartNotification = @"SHKSendDidStartNotification";
 NSString * const SHKSendDidFinishNotification = @"SHKSendDidFinish";
 NSString * const SHKSendDidFailWithErrorNotification = @"SHKSendDidFailWithError";
@@ -203,6 +203,7 @@ BOOL SHKinit;
 	[self hideCurrentViewControllerAnimated:YES];
 }
 
+
 - (void)hideCurrentViewControllerAnimated:(BOOL)animated
 {
 	if (self.isDismissingView)
@@ -211,21 +212,52 @@ BOOL SHKinit;
 	if (self.currentView != nil)
 	{
 		// Dismiss the modal view
-		if ([self.currentView presentingViewController])
+		if ([self.currentView parentViewController] != nil)
 		{
-			self.isDismissingView = YES;            
+			self.isDismissingView = YES;
+			[[self.currentView parentViewController] dismissModalViewControllerAnimated:animated];
+		}
+		// for iOS5
+		else if([self.currentView respondsToSelector:@selector(presentingViewController)] &&
+		        [self.currentView presentingViewController])
+		{
+			self.isDismissingView = YES;
             [[self.currentView presentingViewController] dismissViewControllerAnimated:animated completion:^{
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     [self viewWasDismissed];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SHKHideCurrentViewFinishedNotification object:nil];
                 }];
             }];
         }
+		
 		else
-        {
 			self.currentView = nil;
-        }
 	}
 }
+
+//- (void)hideCurrentViewControllerAnimated:(BOOL)animated
+//{
+//	if (self.isDismissingView)
+//		return;
+//	
+//	if (self.currentView != nil)
+//	{
+//		// Dismiss the modal view
+//		if ([self.currentView presentingViewController])
+//		{
+//			self.isDismissingView = YES;            
+//            [[self.currentView presentingViewController] dismissViewControllerAnimated:animated completion:^{
+//                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//                    [self viewWasDismissed];
+//                }];
+//            }];
+//        }
+//		else
+//        {
+//			self.currentView = nil;
+//        }
+//	}
+//}
 
 - (void)showPendingView
 {

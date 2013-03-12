@@ -26,14 +26,6 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>Facebook</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb281987678567988</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
 			<string>Google Plus</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
