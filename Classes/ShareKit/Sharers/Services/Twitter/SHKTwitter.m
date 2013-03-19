@@ -344,9 +344,7 @@ static NSString *const kSHKTwitterUserInfo=@"kSHKTwitterUserInfo";
 	BOOL result = NO;
 	
 	BOOL isValid = [super validateItem];
-    NSLog(@"isValid===%d",isValid);
 	NSString *status = [self.item customValueForKey:@"ttstatus"];
-	NSLog(@"status=====%@",status);
 	if (isValid && status.length <= 140) {
 		result = YES;
 	}
